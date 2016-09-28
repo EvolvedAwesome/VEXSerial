@@ -1,5 +1,5 @@
 #VexSerial Library :satellite:
-###Solid communication between a VEX Cortex and a Raspberry Pi through UART (Serial).
+###Solid packet based communication between a VEX Cortex and a Raspberry Pi through UART (Serial).
 
 **Brief**
 This library was designed as a holiday project in order to establish the first steps to a robust communication protocol in order to easily make changes to the cortex from the pi (and anything that it is connected to). The protocol is based on the p3cortex adaption by jpearman [link.](http://www.vexforum.com/index.php/10032-communicating-between-two-cortex-dual-cortex-robot/0). This is the basis for several projects that are upcoming using the cortex for myself as well as in debugging and testing of my teams competition robot.
