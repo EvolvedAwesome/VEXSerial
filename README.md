@@ -27,4 +27,4 @@ The two are connected VIA the UART port(s). On the raspberry PI that is GPIO 8 a
 For full documentation and usage information, please see the [included wiki](https://github.com/EvolvedAwesome/VEXSerial/wiki).
 
 ###License
-This work is under [Creative Commons Attribution Non-Commercial](https://creativecommons.org/licenses/by-nc/3.0/legalcode). Please contact me if you wish to use this work under another premise.
+This work is under [Creative Commons Attribution Non-Commercial](https://github.com/EvolvedAwesome/VEXSerial/wiki/License). Please contact me if you wish to use this work under another premise.
