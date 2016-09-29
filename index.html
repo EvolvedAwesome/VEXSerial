@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Vexserial by EvolvedAwesome</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Vexserial</h1>
+      <h2 class="project-tagline">Solid packet based communication between a VEX Cortex and a Raspberry Pi through UART (Serial).</h2>
+      <a href="https://github.com/EvolvedAwesome/VEXSerial" class="btn">View on GitHub</a>
+      <a href="https://github.com/EvolvedAwesome/VEXSerial/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/EvolvedAwesome/VEXSerial/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h2>
+<a id="welcome-to-vexserial" class="anchor" href="#welcome-to-vexserial" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Welcome to VEXSerial.</h2>
+
+<blockquote>
+<p>A library that provides the framework for solid packet-based communication between a VEX Cortex and a Raspberry PI.</p>
+</blockquote>
+
+<h3>
+<a id="brief" class="anchor" href="#brief" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Brief</h3>
+
+<p>This library was designed as a holiday project in order to establish the first steps to a robust communication protocol in order to easily make changes to the cortex from the pi (and anything that it is connected to). The protocol is based on the p3cortex adaption by jpearman <a href="http://www.vexforum.com/index.php/10032-communicating-between-two-cortex-dual-cortex-robot/0">link.</a>. This is the basis for several projects that are upcoming using the cortex for myself as well as in debugging and testing of my team's competition robot.</p>
+
+<h3>
+<a id="components" class="anchor" href="#components" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Components</h3>
+
+<p>This library is made up of a RobotC component and a python program written that utilises pyserial on the Raspberry Pi's UART ports. Instructions for using the UART port on the Pi can be found with a quick google search: <a href="https://www.google.co.nz/search?q=raspberry+pi+uart&amp;oq=raspberry+pi+uart&amp;aqs=chrome..69i57j69i60j69i59j69i60j69i59j69i60.2736j0j7&amp;sourceid=chrome&amp;ie=UTF-8">example instructions.</a>. The 2 UART ports on the cortex are utilised singularly for using a VEX LCD. However since the cortex only supports one LCD at a time (without writing your own secondary controller), we are usually left with a spare UART port that we can have a play with. </p>
+
+<p><em>Note: This is not legal in Competition (unless you're a lucky VexU-er).</em></p>
+
+<p>What your gonna need:</p>
+
+<ul>
+<li>Raspberry Pi (w/Power Source) (<a href="https://www.raspberrypi.org/">Link</a>)</li>
+<li>Vex Cortex (w/battery) (<a href="http://www.vexrobotics.com/">Link</a>)</li>
+<li>Jumper wires (Male to Female)</li>
+<li>RobotC (make sure the check the <a href="https://github.com/EvolvedAwesome/VEXSerial/branches">branches</a> for other supported languages/programming solutions). </li>
+<li>A micro SD card loaded with the latest version of Raspbian (<a href="https://www.raspbian.org/">Link</a>)</li>
+</ul>
+
+<h3>
+<a id="connections" class="anchor" href="#connections" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Connections</h3>
+
+<p>The two are connected VIA the UART port(s). On the raspberry PI that is GPIO 8 and 10 (<a href="http://www.jameco.com/Jameco/workshop/circuitnotes/raspberry_pi_circuit_note_fig2a.jpg">Link</a>) and on the cortex we use UART1 (we can use either port but UART1 is unused by default) (<a href="https://content.vexrobotics.com/docs/276-2194-Rev1-PINOUT.PDF">Link</a>). They are connected as seen below, <strong>with the Ground connected</strong>. The Rx and Tx <em>are</em> crossed over as the data is being transmitted from one end and received at the other.</p>
+
+<pre><code>Gnd -&gt; Gnd
+Rx  -&gt; Tx
+Tx  -&gt; Rx
+</code></pre>
+
+<h3>
+<a id="commands" class="anchor" href="#commands" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Commands</h3>
+
+<p>For full documentation and usage information, please see the <a href="https://github.com/EvolvedAwesome/VEXSerial/wiki">included wiki</a>.</p>
+
+<h3>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h3>
+
+<p>This is under <a href="https://creativecommons.org/licenses/by-nc/3.0/legalcode">Creative Commons Attribution Non-Commercial</a>. Please contact me if you wish to use this work under another premise.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/EvolvedAwesome/VEXSerial">Vexserial</a> is maintained by <a href="https://github.com/EvolvedAwesome">EvolvedAwesome</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
