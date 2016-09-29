@@ -3,9 +3,8 @@ from enum import Enum
 from time import sleep
 import serial
 
-interface = 1
-#interface = serial.Serial("/dev/ttyAMA0", 115200, timeout=1 )
-#interface.open()
+interface = serial.Serial("/dev/ttyAMA0", 115200, timeout=1 )
+interface.open()
 
 ##
 ##
@@ -31,7 +30,7 @@ class command1CMD(Enum):
 
 # These are the group 2 commands (so the subcommands)
 class command2CMD(Enum):
-	SystemACK = 0x10
+	SystemACK = 0x10,
 	SystemDeviceType = 0x11,
 	SystemNAK = 0x12,
 	SystemManufacturer = 0x13,
@@ -46,14 +45,14 @@ class command2CMD(Enum):
 
 	# These are the same as above but are the command 1 (level 2) varients
 	SetAllMotors = 0x10,
-	SetMotorIndex = 0x11
+	SetMotorIndex = 0x11,
 
 	# Level 6 Varient
 	getMotorStatus = 0x10
 
 # This class controls the command/packet wrapper
 class command():
-	def __init__(self, cmd1 = 0, cmd2 = 0, length = 0, data = [0x00], PREAMBLE1 = 0x50, PREAMBLE2 = 0xAF):
+	def __init__(self, cmd1 = 0, cmd2 = 0, length = 0, data = [], PREAMBLE1 = 0x50, PREAMBLE2 = 0xAF):
 		self.cmd1 = cmd1
 		self.cmd2 = cmd2
 		self.length = length
@@ -94,6 +93,7 @@ class command():
 CMD_ACKReply                =   command(command1CMD.GroupSystemReply, command2CMD.SystemACK, 0x01, [0x00])
 NAKReply_Timeout            =   command(command1CMD.GroupSystemReply, command2CMD.SystemNAK, 0x01, [0x04])
 NAKReply_Und                =   command(command1CMD.GroupSystemReply, command2CMD.SystemNAK, 0x01, [0x01])									# Error for undefined command
+NAKReply_Mal				=	command(command1CMD.GroupSystemReply, command2CMD.SystemNAK, 0x01, [0x03])									# Malformed Packet
 
 CMD_DevTypeReply            =   command(command1CMD.GroupSystemReply, command2CMD.SystemDeviceType, 0x02, [0x22, 0xC0])
 CMD_ManufacturerReply       =   command(command1CMD.GroupSystemReply, command2CMD.SystemManufacturer, 0x01, [0x03])         # 3 to represent rounded pi
@@ -122,14 +122,13 @@ CMD_GetMotorStatus          =   command(command1CMD.GroupStatus, command2CMD.get
 ##
 ##
 
+# The idea here is that there is a controller who governs over the
+# input and output packets (a sort of very simple software UART)
 class serialController():
 	def __init__(self, outputSerial):
 		self.outputSerial = outputSerial
 		self.BufferUsed = False
-		self.OutputBufferUsed = False
-		self.IncomeStack = [] # There should only ever be one entry in here
 
-	def sendPacket(self, inputPacketList):
 		# Will halt while buffer is being used
 		while(self.OutputBufferUsed == True):
 			sleep(2.0/1000)    # Wait 2Msec
@@ -194,35 +193,35 @@ class serialController():
 		return returnValue
 
 	def respondToSystemCMDReq(self, inputClass):
-		if self.cmd2 == SystemACK:
+		if self.cmd2 == command2CMD.SystemACK:
 			return True, [0]
 		# This shouldn't happen :/
-		elif self.cmd2 == SystemNAK:
+		elif self.cmd2 == command2CMD.SystemNAK:
 			NAKReply_Und.send(outputController)
-			return SendFailure, self.data
+			return SendFailure, inputClass.data
 
 		# The rest of these are basicially switch statements for what could be asked.
-		if self.cmd2 == SystemDeviceType:
+		if self.cmd2 == command2CMD.SystemDeviceType:
 			CMD_DevTypeReply.send(outputController)
 			return True, [0]
-		if self.cmd2 == SystemManufacturer:
+		if self.cmd2 == command2CMD.SystemManufacturer:
 			CMD_ManufacturerReply.send(outputController)
 			return True, [0]
-		if self.cmd2 == SystemProductName:
+		if self.cmd2 == command2CMD.SystemProductName:
 			CMD_ProductNameReply.send(outputController)
 			return True, [0]
-		if self.cmd2 == SystemSerialNumb:
+		if self.cmd2 == command2CMD.SystemSerialNumb:
 			CMD_SerialNumberReply.send(outputController)
 			return True, [0]
-		if self.cmd2 == SystemFirmware:
+		if self.cmd2 == command2CMD.SystemFirmware:
 			CMD_FirmwareVersionReply.send(outputController)
 			return True, [0]
-		if self.cmd2 == SystemHardware:
+		if self.cmd2 == command2CMD.SystemHardware:
 			CMD_HardwareVersionReply.send(outputController)
 			return True, [0]
 		else:
 			NAKReply_Und.send(outputController)
-			return True, [0]
+			return False, [0]
 
 inputController = serialController(interface)
 outputController = serialController(interface)
@@ -253,6 +252,12 @@ def getMotorStatusByIndex(interface, index):
 	responsePacket = inputController.getLatestPacket()
 	dataResponse = responsePacket.getData()
 	return dataResponse[0] # One byte response (unsigned int)
+
+##
+##
+##  Main loop and controller
+##
+##
 
 # Checks if the serial interface is actually Open
 if interface.isOpen:
