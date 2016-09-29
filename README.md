@@ -17,10 +17,14 @@ What your gonna need:
 * A micro SD card loaded with the latest version of Raspbian
 
 ####Connections
->> Gnd -> Gnd
->> Rx  -> Tx
->> Tx  -> Rx
->> 5v is left unconnected on both sides.
+The two are connected VIA the UART port(s). On the raspberry PI that is GPIO 8 and 10 (Link) and on the cortex we use UART1 (we can use either port but UART1 is unused by default) (Link). They are connected as seen below, **with the Ground connected**. The Rx and Tx are crossed over as the data is being transmitted from one end and received at the other.
+
+    Gnd -> Gnd
+    Rx  -> Tx
+    Tx  -> Rx
 
 ####Commands
-Currently, the commands are very similar as the commands used in p3 (with a datasheet avalaible [here.](https://github.com/jpearman/p3cortex/blob/master/Protocol_d1.pdf)).
+For full documentation and usage information, please see the [included wiki](https://github.com/EvolvedAwesome/VEXSerial/wiki).
+
+###License
+This work is under [Creative Commons Attribution Non-Commercial](https://creativecommons.org/licenses/by-nc/3.0/legalcode). Please contact me if you wish to use this work under another premise.
