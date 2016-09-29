@@ -35,6 +35,11 @@
 #define  CortexDeviceID 0x00
 #define  GlobalDeviceID 0x0f
 
+#define setAllMotors 0x10
+#define setMotorIndex 0x11
+
+#define getMotorStatus 0x10
+
 // This is the maximum size of data in a command packet.
 // I have to enforce this due to limitations in RobotC
 #define commandDataMaxLength 30
@@ -67,20 +72,20 @@
 // This is the struct holding the command and packet information
 // for every sent and recieved packet.
 typedef struct _command {
-  char cmd1;
-  char cmd2;
-  unsigned int length;
-  // We can send up to this amount of data as any data 
-  // set to NULL will just not be sent.
-  // Note: This is a limitation of C and I don't really want
-  // to use Dynamic Memory Allocation as this is robotc (although you could).
-  char data[commandDataMaxLength]; 
+	char cmd1;
+	char cmd2;
+	unsigned int length;
+	// We can send up to this amount of data as any data
+	// set to NULL will just not be sent.
+	// Note: This is a limitation of C and I don't really want
+	// to use Dynamic Memory Allocation as this is robotc (although you could).
+	char data[commandDataMaxLength];
 } command;
 
 // This union is designed so that I can return not only True/False
 // for good or bad transactions. But when data (up to maxDataSize)
 // is avaliable, I can alternativly return that.
-union _returnVar {
+typedef union _returnVar {
 	bool result;
 	char data[maxDataSize];
 } returnVar;
@@ -92,8 +97,10 @@ void setCMD2(command *packet, char cmd2Value);
 char getCMD1(command *packet);
 char getCMD2(command *packet);
 
+void setData(command *packet, char element);
 void setData(command *packet, char *arrayP);
 void addData(command *packet, char *arrayP);
+void initData(command *packet);
 char *getData(command *packet);
 
 command *commandInit(char cmd1, char cmd2);
@@ -107,4 +114,12 @@ void sendPacket(command *inputPacket);
 char readUART(TUARTs uart, int numb);
 char readUART(TUARTs uart);
 void appendIncomeStack(command *newPacketRefrence);
-bool respondToSystemCMDReq(command *inputPacket);
+
+returnVar *respondToSystemCMDReq(command *inputPacket);
+returnVar *respondToStatusReq(command *inputPacket);
+returnVar *respondToControlReq(command *inputPacket);
+
+// Dependency Prototypes
+void F_setAllMotors(int value);
+void F_setMotor(int index, int value);
+ubyte F_getMotorStatus(char index);

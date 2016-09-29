@@ -112,7 +112,7 @@ CMD_HardwareVersionRequest  =   command(command1CMD.GroupSystemCMD, command2CMD.
 
 # These are cortex specific commands
 # The response should be ACK
-CMD_SetAllMotors            =   command(command1CMD.GroupControl, command2CMD.SetAllMotors, 0x01, [0x00]) #We know this will always have one byte of data but dont know what the data is going to be
+CMD_SetAllMotors            =   command(command1CMD.GroupControl, command2CMD.SetAllMotors, 0x02, [0x00, 0x00]) # 2 Bytes, one 0x00, 1 byte of data
 CMD_SetMotorByIndex         =   command(command1CMD.GroupControl, command2CMD.SetMotorIndex, 0x02, [0x00, 0x00]) # 2 Bytes, 1 byte of index, one byte of speed
 CMD_GetMotorStatus          =   command(command1CMD.GroupStatus, command2CMD.getMotorStatus, 0x01, [0x00]) # 1 Byte for index
 
