@@ -1,17 +1,3 @@
-// ## This is the vexSerial Header File 									## //
-// ## This file contains the base const variables (defined as preprocessors ## //
-// ## as well as the base structures and all the function protoypes. 		## //
-
-// ## Attribution: 															## //
-// ## - EvolvedAwesome (Author) 											## //
-// ## - jPearman (protocol basis, inspiration and generally being awesome) 	## //
-
-#ifndef VEXSERIAL_H_
-#define VEXSERIAL_H_
-
-#endif
-
-// Well I changed this to enum types :)
 // These are the group 1 commands
 #define GroupSystemCMD 0
 #define GroupSystemReply 1
@@ -72,54 +58,71 @@
 // This is the struct holding the command and packet information
 // for every sent and recieved packet.
 typedef struct _command {
-	char cmd1;
-	char cmd2;
-	unsigned int length;
-	// We can send up to this amount of data as any data
-	// set to NULL will just not be sent.
-	// Note: This is a limitation of C and I don't really want
-	// to use Dynamic Memory Allocation as this is robotc (although you could).
-	char data[commandDataMaxLength];
-} command;
+  char cmd1;
+  char cmd2;
+  unsigned int length;
 
-// This union is designed so that I can return not only True/False
-// for good or bad transactions. But when data (up to maxDataSize)
-// is avaliable, I can alternativly return that.
-typedef union _returnVar {
-	bool result;
-	char data[maxDataSize];
-} returnVar;
+  // We can send up to this amount of data as any data
+  // set to NULL will just not be sent. (So any unset data)
+  char data[commandDataMaxLength];
+} command;
 
 
 // Function Prototypes
-void setCMD1(command *packet, char cmd1Value);
-void setCMD2(command *packet, char cmd2Value);
-char getCMD1(command *packet);
-char getCMD2(command *packet);
 
+// This func just sets input packets data to the data supplied and
+// sets the length appropriatly.
 void setData(command *packet, char element);
 void setData(command *packet, char *arrayP);
-void addData(command *packet, char *arrayP);
-void initData(command *packet);
-char *getData(command *packet);
 
+// This one adds data onto the the already existing array
+// This means we can add or make changes to data live.
+// Returns false if the data is too long to fit the packet + current data.
+// ReturnType: true/false
+bool addData(command *packet, char *arrayP);
+
+// Initiates the commands that can later be sent/recieved.
+// Make sure you call this a static when used
+// ReturnType: command Struct
 command *commandInit(char cmd1, char cmd2);
 command *commandInit(char cmd1, char cmd2, char *data);
 command *commandInit(char cmd1, char cmd2, char data1);
 command *commandInit(char cmd1, char cmd2, char data1, char data2);
-command *internalGetPacket();
-command *getLatestpacket();
 
-void sendPacket(command *inputPacket);
-char readUART(TUARTs uart, int numb);
-char readUART(TUARTs uart);
+// Takes the raw packet and parses it into something that can
+// be sent over serial (doing checks on the integrity). Returns false
+// if it could not send. True if it sent.
+// ReturnType: true/false
+bool sendPacket(command *inputPacket);
+
+// Places a fully assembled packet into the IncomeStack;
+// The income stack acts as a buffer allowing you to collect the latest
+// reply packet.
 void appendIncomeStack(command *newPacketRefrence);
 
-returnVar *respondToSystemCMDReq(command *inputPacket);
-returnVar *respondToStatusReq(command *inputPacket);
-returnVar *respondToControlReq(command *inputPacket);
+// Gets the latest fully constructed packet in the IncomeStack
+// Returns an empty responseStruct if no packet is found.
+// ReturnType: command Struct
+command *getLatestPacket();
+
+// Encapsulation function for user operated packets
+// Use this to send packets and get a respone in a function.
+// ReturnType: response command;
+command *sendCommand(command *commandSend, int timeout);
 
 // Dependency Prototypes
 void F_setAllMotors(int value);
 void F_setMotor(int index, int value);
 ubyte F_getMotorStatus(char index);
+
+#pragma systemFile
+
+#ifndef VEXSERIAL_H_
+#define VEXSERIAL_H_
+
+#include "modules/commands.c"
+#include "modules/incomeBuffer.c"
+#include "modules/serialController.c"
+#include "modules/cortexInterface.c"
+
+#endif

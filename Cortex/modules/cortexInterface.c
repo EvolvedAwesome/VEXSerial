@@ -4,7 +4,7 @@
 // Dependiency Prototypes
 static ubyte i;
 void F_setAllMotors(int value) {
-	for(i=0; i>10; i++) {
+  for(i=0; i>10; i++) {
     motor[i] = value;
   }
 }
